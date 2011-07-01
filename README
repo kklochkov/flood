@@ -1,0 +1,25 @@
+VERSION 0.1
+
+Logical game the main goal of each is to fill a board with selected color.
+
+Copyright (C) 2011 Kirill (spirit) Klochkov.
+Contact: klochkov.kirill@gmail.com
+
+GNU Lesser General Public License Usage
+Alternatively, this file may be used under the terms of the GNU Lesser
+General Public License version 2.1 as published by the Free Software
+Foundation and appearing in the file LICENSE.LGPL included in the
+packaging of this file.  Please review the following information to
+ensure the GNU Lesser General Public License version 2.1 requirements
+will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+
+NOTE: For successfuly building the game Qt 4.7.3 must be installed with Qt Declarative support.
+
+BUILD STEPS:
+qmake
+make
+sudo make install
+
+RUN STEPS:
+	MAC: $QTDIR/bin/QMLViewer.app/Contents/MacOS/QMLViewer $QTDIR/imports/flood/main.qml
+	LINUX: $QTDIR/bin/qmlviewer $QTDIR/imports/flood/main.qml
