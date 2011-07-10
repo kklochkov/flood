@@ -18,6 +18,24 @@
 
 #include "flood.h"
 
+FloodItem::FloodItem(int row, int column, FloodModel *board)
+    : m_row(row),
+      m_column(column),
+      m_floodBoard(board)
+{
+
+}
+
+QModelIndexList FloodItem::boundaryIndexes() const
+{
+    QModelIndexList indexes;
+    indexes << m_floodBoard->index(row(), column() - 1);        //left
+    indexes << m_floodBoard->index(row() - 1, column());        //top
+    indexes << m_floodBoard->index(row(), column() + 1);        //right
+    indexes << m_floodBoard->index(row() + 1, column());        //bottom
+    return indexes;
+}
+
 void FloodItem::setColor(const QColor &color)
 {
     if (m_color == color)
@@ -25,14 +43,13 @@ void FloodItem::setColor(const QColor &color)
     const QColor oldColor = m_color;
     m_color = color;
 
-    QModelIndexList indexes;
-    indexes << m_floodBoard->index(row(), column() - 1);        //left
-    indexes << m_floodBoard->index(row() - 1, column());        //top
-    indexes << m_floodBoard->index(row(), column() + 1);        //right
-    indexes << m_floodBoard->index(row() + 1, column());        //bottom
+    const QModelIndexList indexes = boundaryIndexes();
+
+    m_floodBoard->addFloodedItem(this);
 
     foreach (const QModelIndex &index, indexes) {
         FloodItem *item = m_floodBoard->itemByIndex(index);
+        m_floodBoard->addFloodedItem(item);
         if (!item || item->color() != oldColor)
             continue;
         m_floodBoard->setData(index, color, FloodModel::Color);
@@ -54,6 +71,7 @@ void FloodModel::init()
 {
     qDeleteAll(m_items);
     m_items.clear();
+    m_floodedItems.clear();
     if (!m_colors.size())
         return;
 
@@ -68,8 +86,9 @@ void FloodModel::init()
             item->m_color = color;
         }
     }
+    addFloodedItem(itemByIndex(index(0, 0)));
     reset();
-    emit newArrangment();
+    emit newArrangement();
 }
 
 void FloodModel::setRowCount(int rows)
@@ -168,4 +187,14 @@ QColor FloodModel::color(int row, int column) const
 void FloodModel::setColor(int row, int column, const QColor &color)
 {
     setData(index(row, column), color, Color);
+}
+
+void FloodModel::addFloodedItem(FloodItem *item)
+{
+    if (!item)
+        return;
+
+    FloodItem *topRightItem = itemByIndex(index(0, 0));
+    if (topRightItem && topRightItem->color() == item->color() && !m_floodedItems.contains(item))
+        m_floodedItems << item;
 }

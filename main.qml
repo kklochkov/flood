@@ -41,7 +41,7 @@ Rectangle {
             rectangle.setAnimationColors(oldColor, floodModel.color(row, column));
         }
 
-        onNewArrangment: board.initBoard()
+        onNewArrangement: board.initBoard()
     }
 
     QtObject {
@@ -52,6 +52,12 @@ Rectangle {
         property int controlButtonsMargin: 10
         property int stepsCount: floodModel.rows + floodModel.columns
         property int currentStep: 0
+
+        function startNewGame()
+        {
+            internal.currentStep = 0;
+            floodModel.init();
+        }
     }
 
     Column {
@@ -161,26 +167,14 @@ Rectangle {
                     }
 
                     onClicked: {
-                        ++internal.currentStep;
-                        floodModel.setColor(0, 0, button.color);
-
-                        var isGameFinished = true;
-                        for (var r = 0; r < floodModel.rows; ++r) {
-                            for (var c = 0; c < floodModel.columns; ++c) {
-                                if (button.color != floodModel.color(r, c)) {
-                                    isGameFinished = false;
-                                    break;
-                                }
-                            }
+                        if (internal.currentStep < internal.stepsCount && !floodModel.flooded) {
+                            ++internal.currentStep;
+                            floodModel.setColor(0, 0, button.color);
                         }
 
-                        if (isGameFinished) {
-                            informationDialog.text = qsTr("You won!");
-                            informationDialog.visible = true;
-                        } else if (internal.currentStep == internal.stepsCount) {
-                            informationDialog.text = qsTr("The game is lost.\nTo start a new game press 'New game'.");
-                            informationDialog.visible = true;
-                            return;
+                        if (floodModel.flooded || internal.currentStep == internal.stepsCount) {
+                            informationDialog.text = floodModel.flooded ? qsTr("You won!") : qsTr("The game is lost.\nTo start a new game press 'New game'.");
+                            informationDialog.show();
                         }
                     }
                 }
@@ -208,10 +202,7 @@ Rectangle {
             Button {
                 text: qsTr("New game")
 
-                onClicked: {
-                    internal.currentStep = 0;
-                    floodModel.init();
-                }
+                onClicked: internal.startNewGame()
             }
 
             Button {
@@ -219,7 +210,7 @@ Rectangle {
 
                 onClicked: {
                     informationDialog.text = qsTr("The game starts at top left corner.\nThe goal of the game it's to fill a board with one color.\nA color can be selected by pressing one of 6 colored buttons.\nGood luck!");
-                    informationDialog.visible = true;
+                    informationDialog.show();
                 }
             }
         }
@@ -228,9 +219,7 @@ Rectangle {
     Dialog {
         id: informationDialog
 
-        width: window.width - 20
-        height: window.height / 3
-
-        anchors.centerIn: parent
+        dialogWidth: window.width - 20
+        dialogHeight: window.height / 3
     }
 }

@@ -29,19 +29,16 @@ class FloodItem
     friend class FloodModel;
 
 public:
-    FloodItem(int row, int column, FloodModel *board)
-        : m_row(row),
-          m_column(column),
-          m_floodBoard(board)
-    {
-
-    }
+    FloodItem(int row, int column, FloodModel *board);
 
     void setColor(const QColor &color);
     QColor color() const { return m_color; }
 
     int row() const { return m_row; }
     int column() const { return m_column; }
+
+private:
+    QModelIndexList boundaryIndexes() const;
 
 private:
     int m_row;
@@ -59,6 +56,7 @@ class FloodModel : public QAbstractTableModel
     Q_PROPERTY(int rows READ rowCount WRITE setRowCount NOTIFY rowCountChnaged)
     Q_PROPERTY(int columns READ columnCount WRITE setColumnCount NOTIFY columnCountChnaged)
     Q_PROPERTY(QVariantList colors READ colors WRITE setColors NOTIFY colorsChanged)
+    Q_PROPERTY(bool flooded READ flooded NOTIFY colorChanged)
 public:
     enum Roles { Color = Qt::UserRole + 1 };
 
@@ -78,6 +76,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
+    bool flooded() const { return m_floodedItems.count() == m_items.count(); }
+
 public slots:
     QColor color(int row, int column) const;
     void setColor(int row, int column, const QColor &color);
@@ -88,11 +88,12 @@ signals:
     void columnCountChnaged();
     void colorsChanged();
     void colorChanged(int row, int column);
-    void newArrangment();
+    void newArrangement();
 
 private:
     FloodItem *itemByIndex(const QModelIndex &index) const;
     void emitColorChanged(int row, int column) { emit colorChanged(row, column); }
+    void addFloodedItem(FloodItem *item);
 
 private:
     class Cell : public QPoint
@@ -117,6 +118,7 @@ private:
     int m_columns;
     QVariantList m_colors;
     mutable QMap<Cell, FloodItem *> m_items;
+    QList<FloodItem *> m_floodedItems;
 };
 
 #endif // FLOOD_H
