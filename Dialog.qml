@@ -22,7 +22,7 @@ Item {
 
     property alias dialogWidth: dialog.width
     property alias dialogHeight: dialog.height
-    property alias text: text.text
+    property alias content: dialogContent.children
 
     visible: false
 
@@ -94,38 +94,10 @@ Item {
             GradientStop { position: 1.0; color: "darkgray" }
         }
 
-        Text {
-            id: text
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: okButton.top
-
-            anchors.topMargin: 5
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            anchors.bottomMargin: 5
-
-            width: parent.width - 10
-
-            wrapMode: Text.WordWrap
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-        }
-
-        Button {
-            id: okButton
-
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 5
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            width: dialog.width - 50
-
-            text: qsTr("OK")
-
-            onClicked: container.hide()
+        Item {
+            id: dialogContent
+            anchors.fill: parent
+            anchors.margins: 10
         }
     }
 }

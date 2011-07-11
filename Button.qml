@@ -19,6 +19,7 @@ Rectangle {
     id: button
 
     property alias text: text.text
+    property alias font: text.font
 
     property variant normalGradient: Gradient {
         GradientStop { position: 0.0; color: Qt.lighter(Qt.lighter("blue")) }

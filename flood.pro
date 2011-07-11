@@ -19,7 +19,8 @@ OTHER_FILES = qmldir \
     *.qml \
     main.qml \
     Button.qml \
-    Dialog.qml
+    Dialog.qml \
+    Statistics.qml
 
 QML_FILES = *.qml
 

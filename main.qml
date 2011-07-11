@@ -44,6 +44,10 @@ Rectangle {
         onNewArrangement: board.initBoard()
     }
 
+    Statistics {
+        id: statistics
+    }
+
     QtObject {
         id: internal
 
@@ -52,9 +56,11 @@ Rectangle {
         property int controlButtonsMargin: 10
         property int stepsCount: floodModel.rows + floodModel.columns
         property int currentStep: 0
+        property bool statisticsSaved: false
 
         function startNewGame()
         {
+            internal.statisticsSaved = false;
             internal.currentStep = 0;
             floodModel.init();
         }
@@ -173,8 +179,24 @@ Rectangle {
                         }
 
                         if (floodModel.flooded || internal.currentStep == internal.stepsCount) {
-                            informationDialog.text = floodModel.flooded ? qsTr("You won!") : qsTr("The game is lost.\nTo start a new game press 'New game'.");
+                            informationDialog.text = floodModel.flooded ? qsTr("You won!\nTo start a new game press 'New game'.")
+                                                                        : qsTr("The game is lost.\nTo start a new game press 'New game'.");
                             informationDialog.show();
+                            if (!internal.statisticsSaved) {
+                                statistics.saveStatistics(floodModel.rows, internal.currentStep, floodModel.flooded ? 1 : 0);
+                                var bestBoard = statistics.bestBoard(floodModel.rows);
+                                var wins = statistics.wins(floodModel.rows);
+                                var gamesPlayed = statistics.gamesPlayed(floodModel.rows);
+                                var winsPercentage = Math.round(100 * wins / gamesPlayed);
+                                console.debug('------statistics------');
+                                console.debug('best board', bestBoard);
+                                console.debug('wins', wins);
+                                console.debug('games played', gamesPlayed);
+                                console.debug('wins (%)', winsPercentage);
+                                console.debug('lose (%)', 100 - winsPercentage);
+                                console.debug('----------------------');
+                                internal.statisticsSaved = true;
+                            }
                         }
                     }
                 }
@@ -219,7 +241,122 @@ Rectangle {
     Dialog {
         id: informationDialog
 
+        property alias text: text.text
+
         dialogWidth: window.width - 20
-        dialogHeight: window.height / 3
+        dialogHeight: contentItem.height
+
+        content: [
+            Item {
+                id: contentItem
+
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                height: textLayout.height + buttons.height + 2 * textLayout.spacing + buttons.anchors.bottomMargin
+
+                Column {
+                    id: textLayout
+
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    spacing: 20
+
+                    Text {
+                        id: text
+
+                        width: parent.width - 10
+
+                        wrapMode: Text.WordWrap
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    Grid {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        columns: 2
+                        rows: 7
+
+                        Repeater {
+                            model: internal.statisticsSaved || visible ? updateModel() : []
+
+                            Text {
+                                text: modelData
+                            }
+
+                            function updateModel()
+                            {
+                                var wins = statistics.wins(floodModel.rows);
+                                var bestBoard = statistics.bestBoard(floodModel.rows);
+                                var gamesPlayed = statistics.gamesPlayed(floodModel.rows);
+                                var winsPercentage = gamesPlayed > 0 ? Math.round(100 * wins / gamesPlayed) : 0;
+                                var losesPercentage = gamesPlayed > 0 ? 100 - winsPercentage : 0;
+
+                                var res = new Array();
+                                res.push(qsTr("Board size: "));
+                                res.push(qsTr("%1x%2").arg(floodModel.rows).arg(floodModel.columns));
+
+                                res.push(qsTr("Best board: "));
+                                res.push(qsTr("%1 step(s)").arg(bestBoard));
+
+                                res.push(qsTr("Games played: "));
+                                res.push(gamesPlayed);
+
+                                res.push(qsTr("Games won: "));
+                                res.push(wins);
+
+                                res.push(qsTr("Games lost: "));
+                                res.push(gamesPlayed - wins);
+
+                                res.push(qsTr("Wins: "));
+                                res.push(qsTr("%1 %").arg(winsPercentage));
+
+                                res.push(qsTr("Loses: "));
+                                res.push(qsTr("%1 %").arg(losesPercentage));
+
+                                return res;
+                            }
+                        }
+                    }
+                }
+            },
+            Row {
+                id: buttons
+
+                spacing: 5
+
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 5
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Button {
+                    id: okButton
+                    text: qsTr("OK")
+                    width: clearStatisticsButton.width
+
+                    onClicked: informationDialog.hide()
+                }
+                Button {
+                    id: newGameButton
+                    text: qsTr("New game")
+                    font.pixelSize: 14
+                    width: clearStatisticsButton.width
+                    height: okButton.height
+
+                    onClicked: { informationDialog.hide(); internal.startNewGame(); }
+                }
+                Button {
+                    id: clearStatisticsButton
+                    text: qsTr("Clear statistics")
+                    font.pixelSize: 10
+                    height: okButton.height
+
+                    onClicked: { informationDialog.hide(); statistics.clearStatistics(); }
+                }
+            }
+        ]
     }
 }
