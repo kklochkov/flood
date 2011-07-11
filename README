@@ -13,13 +13,20 @@ packaging of this file.  Please review the following information to
 ensure the GNU Lesser General Public License version 2.1 requirements
 will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 
-NOTE: For successfuly building the game Qt 4.7.3 must be installed with Qt Declarative support.
+NOTE 1: For successfuly building the game Qt 4.7.3 must be installed with Qt Declarative support.
+NOTE 2: QTDIR environment must be set.
 
 BUILD STEPS:
-qmake
-make
-sudo make install
+    qmake
+    make
+    sudo make install
+
+BUILD STEPS WINDOWS:
+    qmake
+    mingw32-make
+    mingw32-make install
 
 RUN STEPS:
-	MAC: $QTDIR/bin/QMLViewer.app/Contents/MacOS/QMLViewer $QTDIR/imports/flood/main.qml
-	LINUX: $QTDIR/bin/qmlviewer $QTDIR/imports/flood/main.qml
+    MAC: $QTDIR/bin/QMLViewer.app/Contents/MacOS/QMLViewer $QTDIR/imports/flood/main.qml
+    LINUX: $QTDIR/bin/qmlviewer $QTDIR/imports/flood/main.qml
+    WINDOWS: %QTDIR%/bin/qmlviewer %QTDIR%/imports/flood/main.qml

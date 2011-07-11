@@ -35,7 +35,7 @@ QML_FILES = *.qml
 qmldir.files = qmldir *.qml
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
-} else:unix {
+} else:unix || win32-g++ {
     installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
     qmldir.path = $$installPath
     target.path = $$installPath
