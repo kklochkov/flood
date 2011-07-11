@@ -305,10 +305,10 @@ Rectangle {
                                 res.push(qsTr("Games lost: "));
                                 res.push(gamesPlayed - wins);
 
-                                res.push(qsTr("Wins: "));
+                                res.push(qsTr("Won: "));
                                 res.push(qsTr("%1 %").arg(winsPercentage));
 
-                                res.push(qsTr("Loses: "));
+                                res.push(qsTr("Lost: "));
                                 res.push(qsTr("%1 %").arg(losesPercentage));
 
                                 return res;
