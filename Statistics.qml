@@ -16,18 +16,22 @@
 import QtQuick 1.0
 
 Item {
+    signal cleared()
+    signal saved()
 
     function clearStatistics()
     {
         var db = internal.openDatabaseConnection();
-        db.transaction(function(tx) { tx.executeSql('DELETE FROM statistics') })
+        db.transaction(function(tx) { tx.executeSql('DELETE FROM statistics') });
+        cleared();
     }
 
     function saveStatistics(boardSize, steps, win)
     {
         var db = internal.openDatabaseConnection();
         var bestBoardSteps = win > 0 ? steps : 0;
-        db.transaction(function(tx) { tx.executeSql('INSERT INTO statistics VALUES(?, ?, ?)', [ boardSize, bestBoardSteps, win ]) })
+        db.transaction(function(tx) { tx.executeSql('INSERT INTO statistics VALUES(?, ?, ?)', [ boardSize, bestBoardSteps, win ]) });
+        saved();
     }
 
     function bestBoard(boardSize)

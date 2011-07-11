@@ -46,6 +46,9 @@ Rectangle {
 
     Statistics {
         id: statistics
+
+        onSaved: statisticsRepeater.model = statisticsRepeater.updateModel()
+        onCleared: statisticsRepeater.model = statisticsRepeater.updateModel()
     }
 
     QtObject {
@@ -184,17 +187,6 @@ Rectangle {
                             informationDialog.show();
                             if (!internal.statisticsSaved) {
                                 statistics.saveStatistics(floodModel.rows, internal.currentStep, floodModel.flooded ? 1 : 0);
-                                var bestBoard = statistics.bestBoard(floodModel.rows);
-                                var wins = statistics.wins(floodModel.rows);
-                                var gamesPlayed = statistics.gamesPlayed(floodModel.rows);
-                                var winsPercentage = Math.round(100 * wins / gamesPlayed);
-                                console.debug('------statistics------');
-                                console.debug('best board', bestBoard);
-                                console.debug('wins', wins);
-                                console.debug('games played', gamesPlayed);
-                                console.debug('wins (%)', winsPercentage);
-                                console.debug('lose (%)', 100 - winsPercentage);
-                                console.debug('----------------------');
                                 internal.statisticsSaved = true;
                             }
                         }
@@ -281,7 +273,9 @@ Rectangle {
                         rows: 7
 
                         Repeater {
-                            model: internal.statisticsSaved || visible ? updateModel() : []
+                            id: statisticsRepeater
+
+                            model: updateModel()
 
                             Text {
                                 text: modelData
@@ -354,7 +348,7 @@ Rectangle {
                     font.pixelSize: 10
                     height: okButton.height
 
-                    onClicked: { informationDialog.hide(); statistics.clearStatistics(); }
+                    onClicked: statistics.clearStatistics()
                 }
             }
         ]
