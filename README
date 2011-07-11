@@ -29,4 +29,4 @@ BUILD STEPS WINDOWS:
 RUN STEPS:
     MAC: $QTDIR/bin/QMLViewer.app/Contents/MacOS/QMLViewer $QTDIR/imports/flood/main.qml
     LINUX: $QTDIR/bin/qmlviewer $QTDIR/imports/flood/main.qml
-    WINDOWS: %QTDIR%/bin/qmlviewer %QTDIR%/imports/flood/main.qml
+    WINDOWS: %QTDIR%\bin\qmlviewer %QTDIR%/imports/flood/main.qml
