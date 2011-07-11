@@ -36,7 +36,7 @@ qmldir.files = qmldir *.qml
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
 } else:unix {
-    installPath = /usr/local/Trolltech/Qt-4.7.3/imports/$$replace(uri, \\., /)
+    installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
     qmldir.path = $$installPath
     target.path = $$installPath
     INSTALLS += target qmldir
