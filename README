@@ -1,4 +1,4 @@
-VERSION 0.1
+VERSION 0.2
 
 Logical game the main goal of which is to fill a board with selected color.
 
@@ -30,3 +30,6 @@ RUN STEPS:
     MAC: $QTDIR/bin/QMLViewer.app/Contents/MacOS/QMLViewer $QTDIR/imports/flood/main.qml
     LINUX: $QTDIR/bin/qmlviewer $QTDIR/imports/flood/main.qml
     WINDOWS: %QTDIR%\bin\qmlviewer %QTDIR%/imports/flood/main.qml
+
+What's new in newer version of the app you can refer to CHANGES.txt.
+Information about known issues you can find in KNOWN_ISSUES.txt.

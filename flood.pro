@@ -1,3 +1,5 @@
+VERSION = 0.2
+
 TEMPLATE = lib
 TARGET = flood
 QT += declarative
@@ -20,7 +22,9 @@ OTHER_FILES = qmldir \
     main.qml \
     Button.qml \
     Dialog.qml \
-    Statistics.qml
+    Statistics.qml \
+    CHANGES.txt \
+    KNOWN_ISSUES.txt
 
 QML_FILES = *.qml
 
@@ -35,6 +39,10 @@ QML_FILES = *.qml
 qmldir.files = qmldir *.qml
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
+    installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
+    qmldir.path = $$installPath
+    target.path = $$installPath
+    INSTALLS += target qmldir
 } else:unix || win32-g++ {
     installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
     qmldir.path = $$installPath

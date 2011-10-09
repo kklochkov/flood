@@ -272,6 +272,8 @@ Rectangle {
                         wrapMode: Text.WordWrap
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
+
+                        font.pixelSize: 16
                     }
 
                     Grid {
@@ -286,6 +288,7 @@ Rectangle {
 
                             Text {
                                 text: modelData
+                                font.pixelSize: 14
                             }
 
                             function updateModel()
