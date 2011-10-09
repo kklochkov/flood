@@ -55,11 +55,14 @@ Rectangle {
         id: internal
 
         property variant colorModel: ["red", "yellow", "green", "blue", "purple", "cyan"]
-        property int gridMargin: 2
-        property int controlButtonsMargin: 10
+        property int controlButtonsMargin: 5
         property int stepsCount: floodModel.rows + floodModel.columns
         property int currentStep: 0
         property bool statisticsSaved: false
+        property int windowSize: Math.min(window.width, window.height - gameIndicatorLayout.childrenRect.height)
+        property int boardSize: 0.85 * windowSize
+        property int cellSize: boardSize / floodModel.columns
+        property int colorButtonSize: 2 * cellSize - controlButtonsMargin
 
         function startNewGame()
         {
@@ -70,6 +73,8 @@ Rectangle {
     }
 
     Column {
+        id: mainLayout
+
         anchors.centerIn: parent
 
         spacing: 5
@@ -77,15 +82,15 @@ Rectangle {
         Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
-            width: board.width + border.width
-            height: width + 1
+            width: internal.boardSize
+            height: internal.boardSize
 
             Grid {
                 id: board
 
                 anchors.centerIn: parent
-                width: childrenRect.width
-                height: width
+                width: parent.width
+                height: parent.height
 
                 rows: floodModel.rows
                 columns: floodModel.columns
@@ -103,8 +108,8 @@ Rectangle {
                     Rectangle {
                         id: cell
 
-                        width: window.width / floodModel.columns - internal.gridMargin
-                        height: width
+                        width: internal.cellSize
+                        height: internal.cellSize
                         color: modelData
                         border.color: "lightgray"
                         smooth: true
@@ -147,6 +152,7 @@ Rectangle {
         }
 
         Row {
+            id: colorButtonsLayout
             spacing: 5
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -157,8 +163,8 @@ Rectangle {
                 Button {
                     id: button
 
-                    width: window.width / internal.colorModel.length - internal.controlButtonsMargin
-                    height: width
+                    width: internal.colorButtonSize
+                    height: internal.colorButtonSize
 
                     color: modelData
 
@@ -196,6 +202,7 @@ Rectangle {
         }
 
         Row {
+            id: gameIndicatorLayout
             spacing: 5
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -235,7 +242,7 @@ Rectangle {
 
         property alias text: text.text
 
-        dialogWidth: window.width - 20
+        dialogWidth: buttons.width + 2 * buttons.spacing
         dialogHeight: contentItem.height
 
         content: [
